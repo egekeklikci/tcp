@@ -1,4 +1,5 @@
 import java.sql.*;
+import java.util.ArrayList;
 import java.util.Scanner;
 
 class SQL_IMPLEMENTATION {
@@ -12,7 +13,7 @@ class SQL_IMPLEMENTATION {
     private static String url = "jdbc:mysql://sql7.freesqldatabase.com:3306/sql7631636";
     private static String user = "sql7631636";
     private static String password = "SFf2BG6XRu";
-    public static void printProducts() {
+    public static ArrayList<Product> printProducts() {
         try {
             // Loading driver
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -26,17 +27,19 @@ class SQL_IMPLEMENTATION {
 
             // Execute the query
             ResultSet result = statement.executeQuery(sql);
+            ArrayList<Product> products = new ArrayList<>();
 
             // Process the results
             while (result.next()) {
+                Product product = new Product(result.getString("name"), Integer.parseInt(result.getString("price")), Integer.parseInt(result.getString("vat")));
                 // Print the values
-                System.out.println(
-                        "Name:  " + result.getString("name"));
-                System.out.println(
-                        "Price: " + result.getString("price"));
-                System.out.println(
-                        "VAT:   " + result.getString("vat"));
+                /*product.printName();
+                product.printPrice();
+                product.printVat();*/
+                products.add(product);
             }
+            con.close();
+            return products;
         }
         catch (SQLException e) {
             System.out.println(e);
@@ -44,8 +47,9 @@ class SQL_IMPLEMENTATION {
         catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return null;
     }
-    public static void addProduct(){
+    public static void addProduct(Product product){
         try {
             // Loading driver
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -55,7 +59,7 @@ class SQL_IMPLEMENTATION {
             Scanner scanner = new Scanner(System.in);
 
             // Getting Values
-            System.out.print("Enter the Name of the product: ");
+            /*System.out.print("Enter the Name of the product: ");
             String name = "\""+scanner.next() +"\"";
             if (isQuit(name) == -1) return;
             System.out.print("Enter the Price of the product: ");
@@ -63,18 +67,18 @@ class SQL_IMPLEMENTATION {
             System.out.print("Enter the VAT of the product: ");
             int vat = scanner.nextInt();
             double vatAmount = price*(vat/100.0);
-            System.out.println("VAT amount is "+vatAmount);
+            System.out.println("VAT amount is "+vatAmount);*/
 
             // Create a statement
             Statement statement = con.createStatement();
-            String sql = "INSERT INTO Product(Name, Price, Vat) VALUES("+name+", "+price+", "+vat+")";
-
+            String sql = "INSERT INTO Product(Name, Price, Vat) VALUES(\""+product.name+"\", "+product.price+", "+product.vat+")";
             // Execute the query
             int result = statement.executeUpdate(sql);
+            con.close();
             if(result==0)
                 System.out.println("Addition failed.");
             else
-                System.out.println(name.replace("\"", "")+ " is successfully added.");
+                System.out.println(product.name.replace("\"", "")+ " is successfully added.");
         }
          catch (SQLException e) {
             System.out.println(e);
@@ -129,6 +133,7 @@ class SQL_IMPLEMENTATION {
 
             // Execute the query
             int result = statement.executeUpdate(sql);
+            con.close();
             if(result==0)
                 System.out.println("Deletion failed.");
             else
@@ -141,6 +146,37 @@ class SQL_IMPLEMENTATION {
             e.printStackTrace();
         }
     }
+    public static int removeProduct(Product product) {
+        try {
+            // Loading driver
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            // Registering driver
+            Connection con = DriverManager.getConnection(url, user, password);
+
+            Statement statement = con.createStatement();
+
+            int price;
+            String sql = "DELETE FROM Product WHERE name = \"" + product.name + "\" and price = " + product.price + " and vat = " + product.vat;
+
+            // Execute the query
+            int result = statement.executeUpdate(sql);
+            con.close();
+            if (result == 0) {
+                System.out.println("Deletion failed.");
+                return -1;
+            } else {
+                System.out.println(product.name + " is successfully deleted.");
+                return 0;
+            }
+        } catch (SQLException e) {
+            System.out.println(e);
+        } catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+
     public static void modifyProduct(){
         try {
             // Loading driver
@@ -178,13 +214,11 @@ class SQL_IMPLEMENTATION {
             }
             System.out.println(sql);
             int result = statement.executeUpdate(sql);
+            con.close();
             if(result==0)
                 System.out.println("Deletion failed.");
             else
                 System.out.println(((uType==1) ? "Name" : (uType==2) ? "Price" : "VAT" )+ " is successfully changed to "+ ((uType==1) ? name : (uType==2) ? price : vat) +".");
-
-
-
         }
         catch (SQLException e) {
             System.out.println(e);
