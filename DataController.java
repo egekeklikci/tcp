@@ -160,14 +160,7 @@ public class DataController extends JFrame implements ActionListener {
             return;
         }
     }
-    static void closeAdd(){
-        add.dispose();
-    }
-    static void closeRemove(){
-        remove.dispose();
-    }
     static void close(JFrame frame){
         frame.dispose();
     }
-
 }

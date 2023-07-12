@@ -176,7 +176,6 @@ class SQL_IMPLEMENTATION {
         }
         return -1;
     }
-
     public static int modifyProduct(Product product, int uType){
         try {
             // Loading driver
@@ -212,6 +211,52 @@ class SQL_IMPLEMENTATION {
             }
             System.out.println(((uType==1) ? "Name" : (uType==2) ? "Price" : "VAT" )+ " is successfully changed to "+ ((uType==1) ? product.name : (uType==2) ? product.price : product.vat) +".");
             return 0;
+        }
+        catch (SQLException e) {
+            System.out.println(e);
+        }
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();
+        }
+        return -1;
+    }
+    public static int checkAdmin(String username, String adminPassword, String database){
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, user, password);
+
+            Statement statement = con.createStatement();
+//            String sql = "SELECT COUNT(*) FROM adminAccounts WHERE username = \""+ username+"\" AND password = \""+adminPassword+"\"";
+            String sql = "SELECT COUNT(*) FROM "+database+" WHERE username = \""+ username+"\" AND password = \""+adminPassword+"\"";
+
+            ResultSet resultSet = statement.executeQuery(sql);
+            resultSet.next();
+            return resultSet.getInt(1);
+
+        }
+         catch (SQLException e) {
+        System.out.println(e);
+        }
+        catch (ClassNotFoundException e) {
+        e.printStackTrace();
+        }
+        return -1;
+    }
+    public static int addCustomer(String username, String userPassword){
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+
+            Connection con = DriverManager.getConnection(url, user, password);
+
+            Statement statement = con.createStatement();
+            String sql = "INSERT INTO customerAccounts(username, password) VALUES(\""+username+"\", \""+userPassword+"\")";
+            System.out.println(sql);
+            // Execute the query
+            int result = statement.executeUpdate(sql);
+            con.close();
+            // 0 fail
+            return result;
         }
         catch (SQLException e) {
             System.out.println(e);

@@ -67,7 +67,7 @@ public class Remove extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == goBack) {
-            DataController.closeRemove();
+            DataController.close(this);
         }
         else if(e.getSource() == removeButton){
             int vat, price;

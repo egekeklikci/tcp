@@ -16,7 +16,7 @@ public class Interface {
                 switch(process){
                     case 1:
                         System.out.println("Add");
-                        SQL_IMPLEMENTATION.addProduct();
+                        //SQL_IMPLEMENTATION.addProduct();
                         break;
                     case 2:
                         System.out.println("Printing...");
@@ -27,7 +27,7 @@ public class Interface {
                         SQL_IMPLEMENTATION.deleteProduct();
                     case 4:
                         System.out.println("Modify");
-                        SQL_IMPLEMENTATION.modifyProduct();
+                        //SQL_IMPLEMENTATION.modifyProduct();
                 }
                 if(process==5){
                     System.out.println("Quitting");

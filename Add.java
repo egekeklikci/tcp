@@ -26,7 +26,8 @@ public class Add extends JFrame implements ActionListener {
     void printError(String error){
         errorLabel.setText(error);
         errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
-        errorLabel.setVisible(true);
+        panel.add(errorLabel);
+        panel.updateUI();
     }
 
     public Add(){
@@ -72,8 +73,6 @@ public class Add extends JFrame implements ActionListener {
 
         errorLabel = new JLabel();
         errorLabel.setBounds(50, 210, 300, 20);
-        panel.add(errorLabel);
-        errorLabel.setVisible(false);
 
         add(panel);
         setBounds(400, 400, 400, 400);
@@ -83,7 +82,7 @@ public class Add extends JFrame implements ActionListener {
 
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == goBack) {
-            DataController.closeAdd();
+            DataController.close(this);
         }
         else if(e.getSource() == addButton){
             int vat, price;
