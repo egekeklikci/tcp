@@ -102,8 +102,10 @@ public class Remove extends JFrame implements ActionListener {
             Product product = new Product(name, price, vat);
             if (SQL_IMPLEMENTATION.removeProduct(product) == -1)
                 printError("Unsuccessful, check values");
-            else
+            else {
                 printError("Successful");
+                DataController.modified = true;
+            }
         }
     }
 }

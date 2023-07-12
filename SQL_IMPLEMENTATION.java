@@ -177,7 +177,7 @@ class SQL_IMPLEMENTATION {
         return -1;
     }
 
-    public static void modifyProduct(){
+    public static int modifyProduct(Product product, int uType){
         try {
             // Loading driver
             Class.forName("com.mysql.cj.jdbc.Driver");
@@ -187,38 +187,31 @@ class SQL_IMPLEMENTATION {
             Scanner scanner = new Scanner(System.in);
 
             Statement statement = con.createStatement();
-
-            System.out.print("Which value will be updated? (1-Name, 2-Price, 3-VAT) ");
-            int uType = scanner.nextInt();
+            // 0 - name 1 - price 2 - vat
             String sql = null;
-            System.out.print("Enter the Name of the product: ");
-            String name = "\""+scanner.next() +"\"";
-            if (isQuit(name) == -1) return;
-            System.out.print("Enter the Price of the product: ");
-            int price = scanner.nextInt();
-            System.out.print("Enter the VAT of the product: ");
-            int vat = scanner.nextInt();
             switch (uType){
-                case 1 -> {
+                case 0 -> {
                     // name
-                    sql = "UPDATE Product SET name = "+name+" WHERE price = "+price+" and vat = "+vat+";";
+                    sql = "UPDATE Product SET name = \""+product.name+"\" WHERE price = "+product.price+" and vat = "+product.vat+";";
+                }
+                case 1 -> {
+                    // price
+                    sql = "UPDATE Product SET price = "+product.price+" WHERE name = \""+product.name+"\" and vat = "+product.vat +";";
                 }
                 case 2 -> {
-                    // price
-                    sql = "UPDATE Product SET price = "+price+" WHERE name = "+name+" and vat = "+vat +";";
-                }
-                case 3 -> {
                     // VAT
-                    sql = "UPDATE Product SET VAT = "+vat+" WHERE name = "+name+" and  = price "+price+";";
+                    sql = "UPDATE Product SET VAT = "+product.vat+" WHERE name = \""+product.name+"\" and  = price "+product.price+";";
                 }
             }
-            System.out.println(sql);
+            // System.out.println(sql);
             int result = statement.executeUpdate(sql);
             con.close();
-            if(result==0)
+            if(result==0) {
                 System.out.println("Deletion failed.");
-            else
-                System.out.println(((uType==1) ? "Name" : (uType==2) ? "Price" : "VAT" )+ " is successfully changed to "+ ((uType==1) ? name : (uType==2) ? price : vat) +".");
+                return -1;
+            }
+            System.out.println(((uType==1) ? "Name" : (uType==2) ? "Price" : "VAT" )+ " is successfully changed to "+ ((uType==1) ? product.name : (uType==2) ? product.price : product.vat) +".");
+            return 0;
         }
         catch (SQLException e) {
             System.out.println(e);
@@ -226,5 +219,6 @@ class SQL_IMPLEMENTATION {
         catch (ClassNotFoundException e) {
             e.printStackTrace();
         }
+        return -1;
     }
 }

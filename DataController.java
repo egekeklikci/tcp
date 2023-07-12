@@ -6,13 +6,15 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class DataController extends JFrame implements ActionListener {
-    private JButton refreshButton, addButton, removeButton;
+    private JButton refreshButton, addButton, removeButton, modifyButton;
     private DefaultTableModel tableModel;
     private JTable table;
     private int itemCount;
     static Add add;
     static Remove remove;
+    static Modify modify;
     JScrollPane scrollPane;
+    static boolean modified = false;
 
     public DataController() {
         setTitle("Market");
@@ -69,8 +71,9 @@ public class DataController extends JFrame implements ActionListener {
         removeButton.addActionListener(this);
         buttonPanel.add(removeButton);
 
-        buttonPanel.add(new JButton("Modify"));
-
+        modifyButton = new JButton("Modify");
+        modifyButton.addActionListener(this);
+        buttonPanel.add(modifyButton);
 
         return buttonPanel;
     }
@@ -88,7 +91,21 @@ public class DataController extends JFrame implements ActionListener {
         if(e.getSource() == refreshButton){
             ArrayList<Product> products = SQL_IMPLEMENTATION.printProducts();
             int size = products.size();
-            if (size==itemCount) return;
+            if (modified){
+                for(int i = 0; i < itemCount; i++){
+                    tableModel.removeRow(0);
+                }
+                for(int i = 0; i < size ; i++) {
+                    Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat};
+                    tableModel.addRow(objs);
+                }
+                itemCount = size;
+                modified = false;
+                return;
+            }
+            if (size==itemCount) {
+                return;
+            };
             if (size > itemCount) {
                 for (int i = itemCount; i < size; i++) {
                     Object[] objs = {products.get(i).name, products.get(i).price, products.get(i).vat};
@@ -101,7 +118,6 @@ public class DataController extends JFrame implements ActionListener {
             int i = 0;
             while (i < size){
                 if (!tableModel.getValueAt(i, 0).equals(products.get(i).name) || (int) tableModel.getValueAt(i, 1)!=products.get(i).price || ((int)tableModel.getValueAt(i, 2))!=products.get(i).vat) {
-                    System.out.println(i);
                     tableModel.removeRow(i);
                     itemCount--;
                 }
@@ -122,6 +138,9 @@ public class DataController extends JFrame implements ActionListener {
         if (remove!=null){
             if (remove.isDisplayable()) return;
         }
+        if (modify != null){
+            if (modify.isDisplayable()) return;
+        }
         if (e.getSource() == addButton){
             add = new Add();
             add.setVisible(true);
@@ -134,6 +153,12 @@ public class DataController extends JFrame implements ActionListener {
             System.out.println("Remove");
             return;
         }
+        if (e.getSource() == modifyButton){
+            modify = new Modify();
+            modify.setVisible(true);
+            System.out.println("Modify Select Screen");
+            return;
+        }
     }
     static void closeAdd(){
         add.dispose();
@@ -141,4 +166,8 @@ public class DataController extends JFrame implements ActionListener {
     static void closeRemove(){
         remove.dispose();
     }
+    static void close(JFrame frame){
+        frame.dispose();
+    }
+
 }

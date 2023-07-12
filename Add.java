@@ -118,6 +118,7 @@ public class Add extends JFrame implements ActionListener {
             Product product = new Product(name, price, vat);
             SQL_IMPLEMENTATION.addProduct(product);
             printError("Successful");
+            DataController.modified = true;
         }
     }
 }
