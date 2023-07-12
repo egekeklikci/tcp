@@ -53,22 +53,23 @@ public class LoginSelection extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==adminButton){
+            admin = true;
             cp.remove(panel);
             Login login = new Login(this);
             cp.add(login.panel);
             cp.validate();
             cp.repaint();
-            admin = true;
             setTitle("Admin Login");
             return;
         }
         if(e.getSource()==customerButton){
+            admin = false;
             cp.remove(panel);
             Login login = new Login(this);
             cp.add(login.panel);
+            // login.panel.add(login.signup);
             cp.validate();
             cp.repaint();
-            admin = false;
             setTitle("Customer Login");
             return;
         }

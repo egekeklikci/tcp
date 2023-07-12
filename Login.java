@@ -7,7 +7,8 @@ import java.awt.event.ActionListener;
 
 public class Login extends JFrame implements ActionListener {
     JPanel panel;
-    private JButton goBack, loginButton, signup;
+    private JButton goBack, loginButton;
+    JButton signup;
     private JTextField nameField;
     private JLabel errorLabel;
     private JPasswordField passField;
@@ -83,6 +84,8 @@ public class Login extends JFrame implements ActionListener {
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==goBack){
+            if(!losel.admin)
+                losel.cp.remove(signup);
             losel.setTitle("Login");
             losel.cp.remove(this.panel);
             losel.cp.add(losel.panel);
@@ -137,6 +140,10 @@ public class Login extends JFrame implements ActionListener {
             String passText = passField.getText();
             if (nameText.length() > 20 || passText.length() > 20) {
                 System.out.println("Length of the username and password can not exceed 20 characters");
+                return;
+            }
+            if (nameText.length() == 0 || passText.length() == 0){
+                System.out.println("Length of the username and password can not be zero");
                 return;
             }
             if (SQL_IMPLEMENTATION.addCustomer(nameText, passText)==0){
