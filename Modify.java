@@ -5,9 +5,9 @@ import java.awt.event.ActionListener;
 
 public class Modify extends JFrame implements ActionListener {
     public JPanel panel;
-    private JTextField nameText, priceTextf, vatTextf;
-    private JButton goBack, nameButton, priceButton, vatButton, goToChange, changeButton;
-    private JLabel nameLabel, priceLabel, vatLabel;
+    private JTextField nameText, priceTextf, vatTextf, quantityTextf;
+    private JButton goBack, nameButton, priceButton, vatButton, goToChange, changeButton, quantityButton;
+    private JLabel nameLabel, priceLabel, vatLabel, quantityLabel;
     private JLabel errorLabel;
     private int changeType;
     public Modify(){
@@ -26,6 +26,9 @@ public class Modify extends JFrame implements ActionListener {
         vatButton = new JButton("Change VAT");
         vatButton.addActionListener(this);
         vatButton.setBounds(125, 140, 150,30);
+        quantityButton = new JButton("Change quantity");
+        quantityButton.addActionListener(this);
+        quantityButton.setBounds(125, 190, 150, 30);
         nameLabel = new JLabel("Name of the product:", SwingConstants.CENTER);
         nameLabel.setBounds(105, 10, 180, 20);
         nameText = new JTextField();
@@ -38,18 +41,25 @@ public class Modify extends JFrame implements ActionListener {
         vatLabel.setBounds(105, 112, 180, 20);
         vatTextf = new JTextField();
         vatTextf.setBounds(110,128,180,25);
+
+        quantityLabel = new JLabel("Quantity of the product", SwingConstants.CENTER);
+        quantityLabel.setBounds(105, 163, 180 ,20);
+
+        quantityTextf = new JTextField();
+        quantityTextf.setBounds(110, 179, 180, 25);
+
         errorLabel = new JLabel();
-        errorLabel.setBounds(50, 210, 300, 20);
+        errorLabel.setBounds(50, 250, 300, 20);
 
         changeButton = new JButton("Change");
-        changeButton.setBounds(120,170, 160,25);
+        changeButton.setBounds(120,220, 160,25);
         changeButton.addActionListener(this);
 
         addButtons();
 
         goBack = new JButton("Go Back");
         goBack.addActionListener(this);
-        goBack.setBounds(150, 325, 100, 20);
+        goBack.setBounds(150, 335, 100, 20);
         panel.add(goBack);
 
         goToChange = new JButton("Change Modify Type");
@@ -67,6 +77,7 @@ public class Modify extends JFrame implements ActionListener {
         panel.add(nameButton);
         panel.add(priceButton);
         panel.add(vatButton);
+        panel.add(quantityButton);
     }
     private void addTextfields(){
         panel.add(nameLabel);
@@ -84,7 +95,7 @@ public class Modify extends JFrame implements ActionListener {
         panel.updateUI();
     }
     private void removeButtons(){
-        panel.remove(nameButton);panel.remove(priceButton);panel.remove(vatButton);
+        panel.remove(nameButton);panel.remove(priceButton);panel.remove(vatButton); panel.remove(quantityButton);
         panel.updateUI();
     }
 
@@ -94,6 +105,10 @@ public class Modify extends JFrame implements ActionListener {
             DataController.close(this);
         }
         else if(e.getSource()==goToChange){
+            if (changeType == 3){
+                panel.remove(quantityLabel); panel.remove(quantityTextf);
+                panel.updateUI();
+            }
             removeTextFields();
             addButtons();
             panel.remove(goToChange);
@@ -116,10 +131,16 @@ public class Modify extends JFrame implements ActionListener {
             panel.add(goToChange);
             changeType = 2;
         }
+        else if (e.getSource()==quantityButton){
+            removeButtons();
+            addTextfields(); panel.add(quantityTextf);panel.add(quantityLabel);
+            panel.add(goToChange);
+            changeType = 3;
+        }
         else if (e.getSource()==changeButton){
             System.out.println("Change Button Press");
             printError("Change Button Presses");
-            int vat, price;
+            int vat, price, quantity;
             String name = nameText.getText();
             if(name.equals("")){
                 printError("Length of the name can not be zero");
@@ -148,13 +169,30 @@ public class Modify extends JFrame implements ActionListener {
                 printError("Vat must be a number");
                 return;
             }
+            if ( changeType == 3){
+                try{
+                    quantity = Integer.parseInt(quantityTextf.getText());
+                    if (quantity<=0){
+                        printError("Quantity must be bigger than 0");
+                        return;
+                    }
+                } catch (NumberFormatException ex) {
+                    printError("Quantity must be a number");
+                    return;
+                }
+                if(SQL_IMPLEMENTATION.modifyProduct(new Product(name, price, vat, quantity), changeType)==0){
+                    printError("Success");
+                    DataController.modified = true;
+                }
+                printError("Failed. Check Values");
+                return;
+            }
             if(SQL_IMPLEMENTATION.modifyProduct(new Product(name, price, vat), changeType)==0){
                 printError("Success");
                 DataController.modified = true;
             }
             else
                 printError("Failed. Check Values");
-
         }
     }
 

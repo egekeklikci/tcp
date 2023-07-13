@@ -6,7 +6,7 @@ import java.awt.event.ActionListener;
 public class Add extends JFrame implements ActionListener {
     public JPanel panel;
     private JButton goBack, addButton;
-    private JTextField nameText, priceTextf, vatTextf;
+    private JTextField nameText, priceTextf, vatTextf, quantityTextf;
     private JLabel errorLabel;
     public static void main(String[] args) {
         EventQueue.invokeLater(new Runnable() {
@@ -61,9 +61,17 @@ public class Add extends JFrame implements ActionListener {
         vatTextf.setBounds(110,128,180,25);
         panel.add(vatTextf);
 
+        JLabel quantityLabel = new JLabel("Quantity of the product", SwingConstants.CENTER);
+        quantityLabel.setBounds(105, 163, 180, 20);
+        panel.add(quantityLabel);
+
+        quantityTextf = new JTextField();
+        quantityTextf.setBounds(110,179,180,25);
+        panel.add(quantityTextf);
+
         addButton = new JButton("Add Item");
         addButton.addActionListener(this);
-        addButton.setBounds(150, 170, 100,20);
+        addButton.setBounds(150, 220, 100,20);
         panel.add(addButton);
 
         goBack = new JButton("Go Back");
@@ -72,7 +80,7 @@ public class Add extends JFrame implements ActionListener {
         panel.add(goBack);
 
         errorLabel = new JLabel();
-        errorLabel.setBounds(50, 210, 300, 20);
+        errorLabel.setBounds(50, 260, 300, 20);
 
         add(panel);
         setBounds(400, 400, 400, 400);
@@ -85,7 +93,7 @@ public class Add extends JFrame implements ActionListener {
             DataController.close(this);
         }
         else if(e.getSource() == addButton){
-            int vat, price;
+            int vat, price, quantity;
             String name = nameText.getText();
             if(name.equals("")){
                 printError("Length of the name can not be zero");
@@ -114,7 +122,17 @@ public class Add extends JFrame implements ActionListener {
                 printError("Vat must be a number");
                 return;
             }
-            Product product = new Product(name, price, vat);
+            try{
+                quantity = Integer.parseInt(quantityTextf.getText());
+                if (quantity<=0){
+                    printError("Quantity must be bigger than 0");
+                    return;
+                }
+            } catch (NumberFormatException ex) {
+                printError("Quantity must be a number");
+                return;
+            }
+            Product product = new Product(name, price, vat, quantity);
             SQL_IMPLEMENTATION.addProduct(product);
             printError("Successful");
             DataController.modified = true;

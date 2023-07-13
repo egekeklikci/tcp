@@ -1,13 +1,11 @@
-import com.mysql.cj.log.Log;
-
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 public class Login extends JFrame implements ActionListener {
     JPanel panel;
     private JButton goBack, loginButton;
+    CustomerScreen cs;
     JButton signup;
     private JTextField nameField;
     private JLabel errorLabel;
@@ -102,9 +100,8 @@ public class Login extends JFrame implements ActionListener {
                     System.out.println("Length of the username and password can not exceed 20 characters");
                     return;
                 }
-                int result = SQL_IMPLEMENTATION.checkAdmin(nameText, passText, "adminAccounts");
+                int result = SQL_IMPLEMENTATION.checkUser(nameText, passText, "adminAccounts");
                 if (result == 1) {
-                    System.out.println("login");
                     dataC = new DataController();
                     dataC.setVisible(true);
 
@@ -124,10 +121,15 @@ public class Login extends JFrame implements ActionListener {
                     System.out.println("Length of the username and password can not exceed 20 characters");
                     return;
                 }
-                int result = SQL_IMPLEMENTATION.checkAdmin(nameText, passText, "customerAccounts");
+                int result = SQL_IMPLEMENTATION.checkUser(nameText, passText, "customerAccounts");
                 if (result == 1) {
                     printError("Customer Login");
                     System.out.println("customer login");
+                    cs = new CustomerScreen();
+                    cs.setVisible(true);
+
+                    // IF YOU WANT TO OPEN MORE THAN 1 APP DELETE THIS
+                    losel.dispose();
                 } else {
                     printError("Login Failed");
                     System.out.println("fail");
@@ -139,11 +141,15 @@ public class Login extends JFrame implements ActionListener {
             String nameText = nameField.getText();
             String passText = passField.getText();
             if (nameText.length() > 20 || passText.length() > 20) {
-                System.out.println("Length of the username and password can not exceed 20 characters");
+                printError("Length can not exceed 20 characters");
                 return;
             }
             if (nameText.length() == 0 || passText.length() == 0){
-                System.out.println("Length of the username and password can not be zero");
+                printError("Length can not be zero");
+                return;
+            }
+            if (SQL_IMPLEMENTATION.checkUsername(nameText, "customerAccounts") > 0) {
+                printError("Username already exists.");
                 return;
             }
             if (SQL_IMPLEMENTATION.addCustomer(nameText, passText)==0){

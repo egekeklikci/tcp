@@ -25,6 +25,8 @@ public class DataController extends JFrame implements ActionListener {
         scrollPane = new JScrollPane(createTable());
         scrollPane.setPreferredSize(new Dimension(400, 250));
 
+
+
         // Create the lower part (Buttons arranged in a 2x4 grid)
         JPanel buttonPanel = createButtonPanel();
 
@@ -39,13 +41,13 @@ public class DataController extends JFrame implements ActionListener {
     private JTable createTable() {
         ArrayList<Product> products = SQL_IMPLEMENTATION.printProducts();
 
-        String col[] = {"Name","Price","VAT"};
+        String col[] = {"Name","Price","VAT", "Quantity"};
 
         tableModel = new DefaultTableModel(col, 0);
 
         itemCount = products.size();
         for(int i = 0; i < itemCount ; i++) {
-            Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat};
+            Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat, products.get(i).quantity};
             tableModel.addRow(objs);
         }
         table = new JTable(tableModel);
@@ -87,7 +89,6 @@ public class DataController extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-
         if(e.getSource() == refreshButton){
             ArrayList<Product> products = SQL_IMPLEMENTATION.printProducts();
             int size = products.size();
@@ -96,7 +97,7 @@ public class DataController extends JFrame implements ActionListener {
                     tableModel.removeRow(0);
                 }
                 for(int i = 0; i < size ; i++) {
-                    Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat};
+                    Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat, products.get(i).quantity};
                     tableModel.addRow(objs);
                 }
                 itemCount = size;
@@ -108,7 +109,7 @@ public class DataController extends JFrame implements ActionListener {
             };
             if (size > itemCount) {
                 for (int i = itemCount; i < size; i++) {
-                    Object[] objs = {products.get(i).name, products.get(i).price, products.get(i).vat};
+                    Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat, products.get(i).quantity};
                     tableModel.addRow(objs);
                 }
                 tableModel.fireTableDataChanged();
@@ -163,4 +164,6 @@ public class DataController extends JFrame implements ActionListener {
     static void close(JFrame frame){
         frame.dispose();
     }
+
+
 }

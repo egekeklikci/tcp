@@ -67,7 +67,6 @@ public class LoginSelection extends JFrame implements ActionListener
             cp.remove(panel);
             Login login = new Login(this);
             cp.add(login.panel);
-            // login.panel.add(login.signup);
             cp.validate();
             cp.repaint();
             setTitle("Customer Login");
