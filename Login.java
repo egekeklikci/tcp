@@ -4,14 +4,13 @@ import java.awt.event.ActionListener;
 
 public class Login extends JFrame implements ActionListener {
     JPanel panel;
-    private JButton goBack, loginButton;
-    CustomerScreen cs;
-    JButton signup;
+    private JButton goBack, loginButton, signup;
+    CustomerScreen customerScreen;
     private JTextField nameField;
     private JLabel errorLabel;
     private JPasswordField passField;
-    private DataController dataC;
-    LoginSelection losel;
+    private DataController dataController;
+    LoginSelection loginSelection;
 
     void printError(String error){
         errorLabel.setText(error);
@@ -20,8 +19,8 @@ public class Login extends JFrame implements ActionListener {
         panel.updateUI();
     }
 
-    public Login(LoginSelection losel){
-        this.losel = losel;
+    public Login(LoginSelection loginSelection){
+        this.loginSelection = loginSelection;
 
         panel = new JPanel();
         panel.setLayout(null);
@@ -53,7 +52,7 @@ public class Login extends JFrame implements ActionListener {
         signup = new JButton("Sign up");
         signup.addActionListener(this);
         signup.setBounds(135, 160, 130, 25);
-        if(!losel.admin)
+        if(!loginSelection.adminSelected)
             panel.add(signup);
 
         goBack = new JButton("Go Back");
@@ -71,42 +70,34 @@ public class Login extends JFrame implements ActionListener {
         setResizable(false);
     }
 
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            // Login app = new Login();
-            // app.setVisible(true);
-        });
-    }
-
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==goBack){
-            if(!losel.admin)
-                losel.cp.remove(signup);
-            losel.setTitle("Login");
-            losel.cp.remove(this.panel);
-            losel.cp.add(losel.panel);
-            losel.cp.validate();
-            losel.cp.repaint();
+            if(!loginSelection.adminSelected) {
+                loginSelection.loginPageContainer.remove(signup);
+            }
+            loginSelection.setTitle("Login");
+            loginSelection.loginPageContainer.remove(this.panel);
+            loginSelection.loginPageContainer.add(loginSelection.panel);
+            loginSelection.loginPageContainer.validate();
+            loginSelection.loginPageContainer.repaint();
             return;
         }
         if(e.getSource()==loginButton){
             // admin
-            if (losel.admin) {
-                String nameText = nameField.getText();
-                String passText = passField.getText();
+            if (loginSelection.adminSelected) {
+                String nameText = nameField.getText(), passText = passField.getText();
                 if (nameText.length() > 20 || passText.length() > 20) {
                     System.out.println("Length of the username and password can not exceed 20 characters");
                     return;
                 }
                 int result = SQL_IMPLEMENTATION.checkUser(nameText, passText, "adminAccounts");
                 if (result == 1) {
-                    dataC = new DataController();
-                    dataC.setVisible(true);
+                    dataController = new DataController();
+                    dataController.setVisible(true);
 
                     // IF YOU WANT TO OPEN MORE THAN 1 APP DELETE THIS
-                    losel.dispose();
+                    loginSelection.dispose();
                 } else {
                     printError("Login Failed");
                     System.out.println("fail");
@@ -118,21 +109,19 @@ public class Login extends JFrame implements ActionListener {
                 String nameText = nameField.getText();
                 String passText = passField.getText();
                 if (nameText.length() > 20 || passText.length() > 20) {
-                    System.out.println("Length of the username and password can not exceed 20 characters");
+                    printError("Length of the username and password can not exceed 20 characters");
                     return;
                 }
                 int result = SQL_IMPLEMENTATION.checkUser(nameText, passText, "customerAccounts");
                 if (result == 1) {
                     printError("Customer Login");
-                    System.out.println("customer login");
-                    cs = new CustomerScreen();
-                    cs.setVisible(true);
+                    customerScreen = new CustomerScreen(nameText);
+                    customerScreen.setVisible(true);
 
-                    // IF YOU WANT TO OPEN MORE THAN 1 APP DELETE THIS
-                    losel.dispose();
+                    // if you want to open more than 1 app delete below
+                    loginSelection.dispose();
                 } else {
                     printError("Login Failed");
-                    System.out.println("fail");
                 }
                 return;
             }

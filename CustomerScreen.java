@@ -13,11 +13,13 @@ public class CustomerScreen extends JFrame{
     JScrollPane scrollPane;
     ArrayList<Product> products, selectedProducts;
     Cart cart;
+    String username = "";
     boolean samePr(Product pr1, Product pr2){
         return pr1.name.equals(pr2.name) && pr1.price==pr2.price && pr1.vat==pr2.vat;
     }
 
-    public CustomerScreen() {
+    public CustomerScreen(String username) {
+        this.username = username;
         setTitle("Market");
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setLayout(new BorderLayout());
@@ -99,17 +101,4 @@ public class CustomerScreen extends JFrame{
 
         return table;
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            CustomerScreen app = new CustomerScreen();
-            app.setVisible(true);
-        });
-    }
-
-    static void close(JFrame frame){
-        frame.dispose();
-    }
-
-
 }

@@ -9,12 +9,8 @@ import java.net.NoRouteToHostException;
 import java.util.ArrayList;
 
 public class Cart extends JFrame implements ActionListener {
-    JButton checkOut; DefaultTableModel tableModel; JTable table; int item; JScrollPane scrollPane; ArrayList<Product> products; CustomerScreen cs; JLabel moneyLabel;
+    JButton checkOut; DefaultTableModel tableModel; JTable table; int item, wallet; JScrollPane scrollPane; ArrayList<Product> products; CustomerScreen cs; JLabel moneyLabel;
     boolean purchComp = false;
-    boolean samePr(Product pr1, Product pr2){
-        return pr1.name.equals(pr2.name) && pr1.price==pr2.price && pr1.vat==pr2.vat;
-    }
-
     public Cart(CustomerScreen cs) {
         this.cs = cs;
         setTitle("Cart");
@@ -62,7 +58,8 @@ public class Cart extends JFrame implements ActionListener {
         JPanel buttonPanel = new JPanel(new GridLayout(1, 2));
 
         // Create 2 buttons and add them to the panel
-        moneyLabel = new JLabel("Money", SwingConstants.CENTER);
+        wallet = SQL_IMPLEMENTATION.getWallet(cs.username);
+        moneyLabel = new JLabel("Money: "+wallet, SwingConstants.CENTER);
         buttonPanel.add(moneyLabel);
 
         checkOut = new JButton("check out");
@@ -72,42 +69,41 @@ public class Cart extends JFrame implements ActionListener {
         return buttonPanel;
     }
 
-    static void close(JFrame frame){
-        frame.dispose();
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==checkOut){
-            boolean enough = true;
+            int price = 0;
+            boolean enoughStock = true;
             for (Product pr : products){
-                System.out.println(pr.name+" "+pr.quantity);
-                int prStock = SQL_IMPLEMENTATION.checkProduct(pr);
-                if (pr.quantity > prStock){
-                    enough = false;
+                Product productInDB  = SQL_IMPLEMENTATION.checkProduct(pr);
+                assert productInDB != null;
+                if (pr.quantity > productInDB.quantity){
+                    enoughStock = false;
                 }
+                price += pr.quantity * productInDB.price;
             }
-            if (enough){
+
+            if (enoughStock && wallet >= price){
                 // can buy
                 for (Product pr : products){
-                    int prStock = SQL_IMPLEMENTATION.checkProduct(pr);
-                    pr.quantity = prStock-pr.quantity;
+                    Product productInDB = SQL_IMPLEMENTATION.checkProduct(pr);
+                    assert productInDB != null;
+                    pr.quantity = productInDB.quantity-pr.quantity;
                     SQL_IMPLEMENTATION.modifyProduct(pr,3);
                 }
                 for(int i = 0; i < products.size(); i++){
-                    System.out.println("AAA");
                     tableModel.removeRow(0);
                 }
                 item = 0;
                 this.setVisible(false);
                 this.setVisible(true);
                 products.clear();
-                if(!purchComp)
-                    moneyLabel.setText(moneyLabel.getText()+"\nPurchase Completed");
-                purchComp = true;
+                SQL_IMPLEMENTATION.changeWallet(cs.username, (wallet-price), price);
+                moneyLabel.setText("Money:"+SQL_IMPLEMENTATION.getWallet(cs.username)+" Purchase completed.");
+                wallet -= price;
             }
             else
-                System.out.println("NOT ENOUGH STOCK");
+                moneyLabel.setText("Money:"+SQL_IMPLEMENTATION.getWallet(cs.username)+" Not enough stock or balance");
         }
     }
 }

@@ -68,13 +68,9 @@ class SQL_IMPLEMENTATION {
         try {
             // Loading driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-
             // Registering driver
             Connection con = DriverManager.getConnection(url, user, password);
-
             Statement statement = con.createStatement();
-
-            int price;
             String sql = "DELETE FROM Product WHERE name = \"" + product.name + "\" and price = " + product.price + " and vat = " + product.vat;
 
             // Execute the query
@@ -98,13 +94,10 @@ class SQL_IMPLEMENTATION {
         try {
             // Loading driver
             Class.forName("com.mysql.cj.jdbc.Driver");
-
             // Registering driver
             Connection con = DriverManager.getConnection(url, user, password);
-            Scanner scanner = new Scanner(System.in);
-
             Statement statement = con.createStatement();
-            // 0 - name 1 - price 2 - vat
+            // 0 - name | 1 - price | 2 - vat | 3 - quantity
             String sql = null;
             switch (uType){
                 case 0 -> {
@@ -204,18 +197,37 @@ class SQL_IMPLEMENTATION {
         }
         return -1;
     }
-
-    public static int checkProduct(Product product){
+    public static Product checkProduct(Product product){
         try {
             Class.forName("com.mysql.cj.jdbc.Driver");
             Connection con = DriverManager.getConnection(url, user, password);
             Statement statement = con.createStatement();
             String sql = "SELECT * FROM Product WHERE name = \"" + product.name + "\" and price = " + product.price + " and vat = " + product.vat+";";
             ResultSet resultSet = statement.executeQuery(sql);
+            Product prReturned = null;
+            if(resultSet.next()){
+                prReturned = new Product(resultSet.getString("name"), Integer.parseInt(resultSet.getString("price")), Integer.parseInt(resultSet.getString("vat")), Integer.parseInt(resultSet.getString("Quantity")));
+            }
+            return prReturned;
+        }
+        catch (SQLException e) {
+            System.out.println(e);}
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();}
+        return null;
+    }
+    public static int getWallet(String userName){
+        try {
+            Class.forName("com.mysql.cj.jdbc.Driver");
+            Connection con = DriverManager.getConnection(url, user, password);
+            Statement statement = con.createStatement();
+            String sql = "SELECT * FROM customerAccounts WHERE username = \"" + userName +"\";";
+            ResultSet resultSet = statement.executeQuery(sql);
             String foundType = "";
             if(resultSet.next()){
-                foundType = resultSet.getString("Quantity");
+                foundType = resultSet.getString("wallet");
             }
+            con.close();
             return Integer.parseInt(foundType);
         }
         catch (SQLException e) {
@@ -223,5 +235,25 @@ class SQL_IMPLEMENTATION {
         catch (ClassNotFoundException e) {
             e.printStackTrace();}
         return -1;
+    }
+    public static void changeWallet(String userName, int newWallet, int moneySpent){
+        try {
+        Class.forName("com.mysql.cj.jdbc.Driver");
+        Connection con = DriverManager.getConnection(url, user, password);
+        Statement statement = con.createStatement();
+        String sql = "UPDATE customerAccounts set wallet = "+newWallet+" where username = \""+userName+"\";";
+        int result = statement.executeUpdate(sql);
+        if(result==0) {
+                System.out.println("Modify failed. (changeWallet)");
+                return;
+        }
+        String updateAdmin = "UPDATE customerAccounts set wallet = "+(getWallet("admin")+moneySpent)+" where username = \"admin\";";
+        statement.executeUpdate(updateAdmin);
+        con.close();
+        }
+        catch (SQLException e) {
+            System.out.println(e);}
+        catch (ClassNotFoundException e) {
+            e.printStackTrace();}
     }
 }

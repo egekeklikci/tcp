@@ -5,17 +5,14 @@ import java.awt.event.ActionListener;
 
 public class LoginSelection extends JFrame implements ActionListener
 {
-    boolean admin = false;
+    boolean adminSelected = false;
     JPanel panel;
     private JButton customerButton, adminButton;
-    Container cp = null;
+    Container loginPageContainer;
     public LoginSelection(){
-
         panel = new JPanel();
         panel.setLayout(null);
-
-        cp = getContentPane();
-
+        loginPageContainer = getContentPane();
         setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         setTitle("Login");
 
@@ -53,24 +50,23 @@ public class LoginSelection extends JFrame implements ActionListener
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource()==adminButton){
-            admin = true;
-            cp.remove(panel);
+            adminSelected = true;
+            loginPageContainer.remove(panel);
             Login login = new Login(this);
-            cp.add(login.panel);
-            cp.validate();
-            cp.repaint();
+            loginPageContainer.add(login.panel);
+            loginPageContainer.validate();
+            loginPageContainer.repaint();
             setTitle("Admin Login");
             return;
         }
         if(e.getSource()==customerButton){
-            admin = false;
-            cp.remove(panel);
+            adminSelected = false;
+            loginPageContainer.remove(panel);
             Login login = new Login(this);
-            cp.add(login.panel);
-            cp.validate();
-            cp.repaint();
+            loginPageContainer.add(login.panel);
+            loginPageContainer.validate();
+            loginPageContainer.repaint();
             setTitle("Customer Login");
-            return;
         }
     }
 }
