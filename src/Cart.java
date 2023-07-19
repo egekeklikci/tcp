@@ -3,14 +3,10 @@ import javax.swing.table.DefaultTableModel;
 import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.awt.event.MouseEvent;
-import java.awt.event.MouseListener;
-import java.net.NoRouteToHostException;
 import java.util.ArrayList;
 
 public class Cart extends JFrame implements ActionListener {
     JButton checkOut; DefaultTableModel tableModel; JTable table; int item, wallet; JScrollPane scrollPane; ArrayList<Product> products; CustomerScreen cs; JLabel moneyLabel;
-    boolean purchComp = false;
     public Cart(CustomerScreen cs) {
         this.cs = cs;
         setTitle("Cart");
@@ -20,9 +16,7 @@ public class Cart extends JFrame implements ActionListener {
         // Create the upper part (JTable inside JScrollPane)
         scrollPane = new JScrollPane(createTable());
         scrollPane.setPreferredSize(new Dimension(400, 250));
-
-
-
+        
         JPanel buttonPanel = createButtonPanel();
         add(buttonPanel, BorderLayout.CENTER);
 
