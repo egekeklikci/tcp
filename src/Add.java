@@ -1,5 +1,4 @@
 import javax.swing.*;
-import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
@@ -8,21 +7,6 @@ public class Add extends JFrame implements ActionListener {
     private JButton goBack, addButton;
     private JTextField nameText, priceTextf, vatTextf, quantityTextf;
     private JLabel errorLabel;
-    public static void main(String[] args) {
-        EventQueue.invokeLater(new Runnable() {
-            @Override
-            public void run() {
-                try {
-                    Add frame = new Add();
-                    frame.setVisible(true);
-                }
-                catch (Exception e){
-                    e.printStackTrace();
-                }
-            }
-        });
-    }
-
     void printError(String error){
         errorLabel.setText(error);
         errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
