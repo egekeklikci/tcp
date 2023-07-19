@@ -4,7 +4,6 @@ import java.awt.*;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.ArrayList;
-import java.util.Set;
 
 public class CustomerScreen extends JFrame{
     private DefaultTableModel tableModel;
@@ -30,14 +29,8 @@ public class CustomerScreen extends JFrame{
         scrollPane = new JScrollPane(createTable());
         scrollPane.setPreferredSize(new Dimension(400, 250));
 
-
-
-        // Create the lower part (Buttons arranged in a 2x4 grid)
-        //JPanel buttonPanel = createButtonPanel();
-
         // Add the upper and lower parts to the frame
         add(scrollPane);
-        //add(buttonPanel, BorderLayout.CENTER);
         setBounds(0,0,400,400);
         setLocationRelativeTo(null); // Center the frame on the screen
         setResizable(false);
@@ -96,9 +89,7 @@ public class CustomerScreen extends JFrame{
             tableModel.addRow(objs);
         }
         table = new JTable(tableModel);
-
         table.setDefaultEditor(Object.class, null);
-
         return table;
     }
 }

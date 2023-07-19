@@ -16,7 +16,7 @@ public class Cart extends JFrame implements ActionListener {
         // Create the upper part (JTable inside JScrollPane)
         scrollPane = new JScrollPane(createTable());
         scrollPane.setPreferredSize(new Dimension(400, 250));
-        
+
         JPanel buttonPanel = createButtonPanel();
         add(buttonPanel, BorderLayout.CENTER);
 

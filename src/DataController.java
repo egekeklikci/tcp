@@ -25,9 +25,7 @@ public class DataController extends JFrame implements ActionListener {
         scrollPane = new JScrollPane(createTable());
         scrollPane.setPreferredSize(new Dimension(400, 250));
 
-
-
-        // Create the lower part (Buttons arranged in a 2x4 grid)
+        // Create the lower part (Button panel)
         JPanel buttonPanel = createButtonPanel();
 
         // Add the upper and lower parts to the frame
@@ -40,27 +38,22 @@ public class DataController extends JFrame implements ActionListener {
 
     private JTable createTable() {
         ArrayList<Product> products = SQL_IMPLEMENTATION.printProducts();
+        itemCount = products.size();
 
         String col[] = {"Name","Price","VAT", "Quantity"};
-
         tableModel = new DefaultTableModel(col, 0);
-
-        itemCount = products.size();
         for(int i = 0; i < itemCount ; i++) {
             Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat, products.get(i).quantity};
             tableModel.addRow(objs);
         }
         table = new JTable(tableModel);
-
         table.setDefaultEditor(Object.class, null);
-
         return table;
     }
-
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new GridLayout(2, 4));
 
-        // Create 8 buttons and add them to the panel
+        // Create 4 buttons and add them to the panel
         refreshButton = new JButton("Refresh");
         refreshButton.addActionListener(this);
         buttonPanel.add(refreshButton);
@@ -79,14 +72,6 @@ public class DataController extends JFrame implements ActionListener {
 
         return buttonPanel;
     }
-
-    public static void main(String[] args) {
-        SwingUtilities.invokeLater(() -> {
-            DataController app = new DataController();
-            app.setVisible(true);
-        });
-    }
-
     @Override
     public void actionPerformed(ActionEvent e) {
         if(e.getSource() == refreshButton){
@@ -164,6 +149,4 @@ public class DataController extends JFrame implements ActionListener {
     static void close(JFrame frame){
         frame.dispose();
     }
-
-
 }

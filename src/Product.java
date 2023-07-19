@@ -24,5 +24,4 @@ public class Product {
     public void printVat(){
         System.out.println(vat);
     }
-
 }
