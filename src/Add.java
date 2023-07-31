@@ -7,14 +7,15 @@ public class Add extends JFrame implements ActionListener {
     private JButton goBack, addButton;
     private JTextField nameText, priceTextf, vatTextf, quantityTextf;
     private JLabel errorLabel;
-    void printError(String error){
+
+    void printError(String error) {
         errorLabel.setText(error);
         errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(errorLabel);
         panel.updateUI();
     }
 
-    public Add(){
+    public Add() {
         panel = new JPanel();
         panel.setLayout(null);
 
@@ -26,7 +27,7 @@ public class Add extends JFrame implements ActionListener {
         panel.add(nameLabel);
 
         nameText = new JTextField();
-        nameText.setBounds(110,26,180,25);
+        nameText.setBounds(110, 26, 180, 25);
         panel.add(nameText);
 
         JLabel priceLabel = new JLabel("Price of the product", SwingConstants.CENTER);
@@ -34,7 +35,7 @@ public class Add extends JFrame implements ActionListener {
         panel.add(priceLabel);
 
         priceTextf = new JTextField();
-        priceTextf.setBounds(110,77,180,25);
+        priceTextf.setBounds(110, 77, 180, 25);
         panel.add(priceTextf);
 
         JLabel vatLabel = new JLabel("VAT of the product", SwingConstants.CENTER);
@@ -42,7 +43,7 @@ public class Add extends JFrame implements ActionListener {
         panel.add(vatLabel);
 
         vatTextf = new JTextField();
-        vatTextf.setBounds(110,128,180,25);
+        vatTextf.setBounds(110, 128, 180, 25);
         panel.add(vatTextf);
 
         JLabel quantityLabel = new JLabel("Quantity of the product", SwingConstants.CENTER);
@@ -50,12 +51,12 @@ public class Add extends JFrame implements ActionListener {
         panel.add(quantityLabel);
 
         quantityTextf = new JTextField();
-        quantityTextf.setBounds(110,179,180,25);
+        quantityTextf.setBounds(110, 179, 180, 25);
         panel.add(quantityTextf);
 
         addButton = new JButton("Add Item");
         addButton.addActionListener(this);
-        addButton.setBounds(150, 220, 100,20);
+        addButton.setBounds(150, 220, 100, 20);
         panel.add(addButton);
 
         goBack = new JButton("Go Back");
@@ -75,20 +76,19 @@ public class Add extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == goBack) {
             DataController.close(this);
-        }
-        else if(e.getSource() == addButton){
+        } else if (e.getSource() == addButton) {
             int vat, price, quantity;
             String name = nameText.getText();
-            if(name.equals("")){
+            if (name.equals("")) {
                 printError("Length of the name can not be zero");
                 return;
-            }else if (name.length()>21){
+            } else if (name.length() > 21) {
                 printError("Length of the name can not exceed 20");
                 return;
             }
-            try{
+            try {
                 price = Integer.parseInt(priceTextf.getText());
-                if (price<0){
+                if (price < 0) {
                     printError("Price must be bigger than 0");
                     return;
                 }
@@ -96,9 +96,9 @@ public class Add extends JFrame implements ActionListener {
                 printError("Price must be a number");
                 return;
             }
-            try{
+            try {
                 vat = Integer.parseInt(vatTextf.getText());
-                if (vat > 100 || vat < 0){
+                if (vat > 100 || vat < 0) {
                     printError("VAT must be between 0 and 100");
                     return;
                 }
@@ -106,9 +106,9 @@ public class Add extends JFrame implements ActionListener {
                 printError("Vat must be a number");
                 return;
             }
-            try{
+            try {
                 quantity = Integer.parseInt(quantityTextf.getText());
-                if (quantity<=0){
+                if (quantity <= 0) {
                     printError("Quantity must be bigger than 0");
                     return;
                 }
