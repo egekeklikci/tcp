@@ -7,13 +7,14 @@ public class Remove extends JFrame implements ActionListener {
     private JButton goBack, removeButton;
     private JTextField nameText, priceTextf, vatTextf;
     private JLabel errorLabel;
-    void printError(String error){
+
+    void printError(String error) {
         errorLabel.setText(error);
         errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
         errorLabel.setVisible(true);
     }
 
-    public Remove(){
+    public Remove() {
         panel = new JPanel();
         panel.setLayout(null);
 
@@ -25,7 +26,7 @@ public class Remove extends JFrame implements ActionListener {
         panel.add(nameLabel);
 
         nameText = new JTextField();
-        nameText.setBounds(110,26,180,25);
+        nameText.setBounds(110, 26, 180, 25);
         panel.add(nameText);
 
         JLabel priceLabel = new JLabel("Price of the product", SwingConstants.CENTER);
@@ -33,7 +34,7 @@ public class Remove extends JFrame implements ActionListener {
         panel.add(priceLabel);
 
         priceTextf = new JTextField();
-        priceTextf.setBounds(110,77,180,25);
+        priceTextf.setBounds(110, 77, 180, 25);
         panel.add(priceTextf);
 
         JLabel vatLabel = new JLabel("VAT of the product", SwingConstants.CENTER);
@@ -41,12 +42,12 @@ public class Remove extends JFrame implements ActionListener {
         panel.add(vatLabel);
 
         vatTextf = new JTextField();
-        vatTextf.setBounds(110,128,180,25);
+        vatTextf.setBounds(110, 128, 180, 25);
         panel.add(vatTextf);
 
         removeButton = new JButton("Remove Item");
         removeButton.addActionListener(this);
-        removeButton.setBounds(150, 170, 100,20);
+        removeButton.setBounds(150, 170, 100, 20);
         panel.add(removeButton);
 
         goBack = new JButton("Go Back");
@@ -68,20 +69,19 @@ public class Remove extends JFrame implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         if (e.getSource() == goBack) {
             DataController.close(this);
-        }
-        else if(e.getSource() == removeButton){
+        } else if (e.getSource() == removeButton) {
             int vat, price;
             String name = nameText.getText();
-            if(name.equals("")){
+            if (name.equals("")) {
                 printError("Length of the name can not be zero");
                 return;
-            }else if (name.length()>21){
+            } else if (name.length() > 21) {
                 printError("Length of the name can not exceed 20");
                 return;
             }
-            try{
+            try {
                 price = Integer.parseInt(priceTextf.getText());
-                if (price<0){
+                if (price < 0) {
                     printError("Price must be bigger than 0");
                     return;
                 }
@@ -89,9 +89,9 @@ public class Remove extends JFrame implements ActionListener {
                 printError("Price must be a number");
                 return;
             }
-            try{
+            try {
                 vat = Integer.parseInt(vatTextf.getText());
-                if (vat > 100 || vat < 0){
+                if (vat > 100 || vat < 0) {
                     printError("VAT must be between 0 and 100");
                     return;
                 }

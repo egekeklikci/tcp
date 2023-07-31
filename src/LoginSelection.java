@@ -3,13 +3,13 @@ import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
-public class LoginSelection extends JFrame implements ActionListener
-{
+public class LoginSelection extends JFrame implements ActionListener {
     boolean adminSelected = false;
     JPanel panel;
     private JButton customerButton, adminButton;
     Container loginPageContainer;
-    public LoginSelection(){
+
+    public LoginSelection() {
         panel = new JPanel();
         panel.setLayout(null);
         loginPageContainer = getContentPane();
@@ -18,7 +18,7 @@ public class LoginSelection extends JFrame implements ActionListener
 
         customerButton = new JButton("Customer Login");
         customerButton.addActionListener(this);
-        customerButton.setBounds(100,100,200,50);
+        customerButton.setBounds(100, 100, 200, 50);
         panel.add(customerButton);
 
         adminButton = new JButton("Admin Login");
@@ -39,8 +39,7 @@ public class LoginSelection extends JFrame implements ActionListener
                 try {
                     LoginSelection frame = new LoginSelection();
                     frame.setVisible(true);
-                }
-                catch (Exception e){
+                } catch (Exception e) {
                     e.printStackTrace();
                 }
             }
@@ -49,7 +48,7 @@ public class LoginSelection extends JFrame implements ActionListener
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==adminButton){
+        if (e.getSource() == adminButton) {
             adminSelected = true;
             loginPageContainer.remove(panel);
             Login login = new Login(this);
@@ -59,7 +58,7 @@ public class LoginSelection extends JFrame implements ActionListener
             setTitle("Admin Login");
             return;
         }
-        if(e.getSource()==customerButton){
+        if (e.getSource() == customerButton) {
             adminSelected = false;
             loginPageContainer.remove(panel);
             Login login = new Login(this);

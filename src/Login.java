@@ -12,14 +12,14 @@ public class Login extends JFrame implements ActionListener {
     private DataController dataController;
     LoginSelection loginSelection;
 
-    void printError(String error){
+    void printError(String error) {
         errorLabel.setText(error);
         errorLabel.setHorizontalAlignment(SwingConstants.CENTER);
         panel.add(errorLabel);
         panel.updateUI();
     }
 
-    public Login(LoginSelection loginSelection){
+    public Login(LoginSelection loginSelection) {
         this.loginSelection = loginSelection;
 
         panel = new JPanel();
@@ -33,7 +33,7 @@ public class Login extends JFrame implements ActionListener {
         panel.add(nameLabel);
 
         nameField = new JTextField();
-        nameField.setBounds(110,26,180,25);
+        nameField.setBounds(110, 26, 180, 25);
         panel.add(nameField);
 
         nameLabel = new JLabel("Password", SwingConstants.CENTER);
@@ -41,7 +41,7 @@ public class Login extends JFrame implements ActionListener {
         panel.add(nameLabel);
 
         passField = new JPasswordField();
-        passField.setBounds(110,77,180,25);
+        passField.setBounds(110, 77, 180, 25);
         panel.add(passField);
 
         loginButton = new JButton("Login");
@@ -52,7 +52,7 @@ public class Login extends JFrame implements ActionListener {
         signup = new JButton("Sign up");
         signup.addActionListener(this);
         signup.setBounds(135, 160, 130, 25);
-        if(!loginSelection.adminSelected)
+        if (!loginSelection.adminSelected)
             panel.add(signup);
 
         goBack = new JButton("Go Back");
@@ -72,8 +72,8 @@ public class Login extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==goBack){
-            if(!loginSelection.adminSelected) {
+        if (e.getSource() == goBack) {
+            if (!loginSelection.adminSelected) {
                 loginSelection.loginPageContainer.remove(signup);
             }
             loginSelection.setTitle("Login");
@@ -83,7 +83,7 @@ public class Login extends JFrame implements ActionListener {
             loginSelection.loginPageContainer.repaint();
             return;
         }
-        if(e.getSource()==loginButton){
+        if (e.getSource() == loginButton) {
             // admin
             if (loginSelection.adminSelected) {
                 String nameText = nameField.getText(), passText = passField.getText();
@@ -105,7 +105,7 @@ public class Login extends JFrame implements ActionListener {
                 return;
             }
             // customer
-            else{
+            else {
                 String nameText = nameField.getText();
                 String passText = passField.getText();
                 if (nameText.length() > 20 || passText.length() > 20) {
@@ -126,14 +126,14 @@ public class Login extends JFrame implements ActionListener {
                 return;
             }
         }
-        if(e.getSource()==signup){
+        if (e.getSource() == signup) {
             String nameText = nameField.getText();
             String passText = passField.getText();
             if (nameText.length() > 20 || passText.length() > 20) {
                 printError("Length can not exceed 20 characters");
                 return;
             }
-            if (nameText.length() == 0 || passText.length() == 0){
+            if (nameText.length() == 0 || passText.length() == 0) {
                 printError("Length can not be zero");
                 return;
             }
@@ -141,10 +141,9 @@ public class Login extends JFrame implements ActionListener {
                 printError("Username already exists.");
                 return;
             }
-            if (SQL_IMPLEMENTATION.addCustomer(nameText, passText)==0){
+            if (SQL_IMPLEMENTATION.addCustomer(nameText, passText) == 0) {
                 printError("Signup Failed.");
-            }
-            else {
+            } else {
                 printError("Successfully added. Please log in now");
             }
         }

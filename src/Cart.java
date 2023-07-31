@@ -6,7 +6,15 @@ import java.awt.event.ActionListener;
 import java.util.ArrayList;
 
 public class Cart extends JFrame implements ActionListener {
-    JButton checkOut; DefaultTableModel tableModel; JTable table; int item, wallet; JScrollPane scrollPane; ArrayList<Product> products; CustomerScreen cs; JLabel moneyLabel;
+    JButton checkOut;
+    DefaultTableModel tableModel;
+    JTable table;
+    int item, wallet;
+    JScrollPane scrollPane;
+    ArrayList<Product> products;
+    CustomerScreen cs;
+    JLabel moneyLabel;
+
     public Cart(CustomerScreen cs) {
         this.cs = cs;
         setTitle("Cart");
@@ -23,21 +31,22 @@ public class Cart extends JFrame implements ActionListener {
         // Add the upper and lower parts to the frame
         add(scrollPane, BorderLayout.NORTH);
         //add(buttonPanel, BorderLayout.CENTER);
-        setBounds(0,0,400,400);
+        setBounds(0, 0, 400, 400);
         setLocationRelativeTo(null); // Center the frame on the screen
         setResizable(false);
 
         item = cs.selectedProducts.size();
     }
+
     private JTable createTable() {
         products = cs.selectedProducts;
 
-        String col[] = {"Name","Price","VAT", "Quantity"};
+        String col[] = {"Name", "Price", "VAT", "Quantity"};
 
         tableModel = new DefaultTableModel(col, 0);
 
-        for(int i = 0; i < products.size() ; i++) {
-            Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat, products.get(i).quantity};
+        for (int i = 0; i < products.size(); i++) {
+            Object[] objs = {products.get(i).name, products.get(i).price, products.get(i).vat, products.get(i).quantity};
             this.products.add(products.get(i));
             tableModel.addRow(objs);
         }
@@ -53,7 +62,7 @@ public class Cart extends JFrame implements ActionListener {
 
         // Create 2 buttons and add them to the panel
         wallet = SQL_IMPLEMENTATION.getWallet(cs.username);
-        moneyLabel = new JLabel("Money: "+wallet, SwingConstants.CENTER);
+        moneyLabel = new JLabel("Money: " + wallet, SwingConstants.CENTER);
         buttonPanel.add(moneyLabel);
 
         checkOut = new JButton("check out");
@@ -65,39 +74,38 @@ public class Cart extends JFrame implements ActionListener {
 
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource()==checkOut){
+        if (e.getSource() == checkOut) {
             int price = 0;
             boolean enoughStock = true;
-            for (Product pr : products){
-                Product productInDB  = SQL_IMPLEMENTATION.checkProduct(pr);
+            for (Product pr : products) {
+                Product productInDB = SQL_IMPLEMENTATION.checkProduct(pr);
                 assert productInDB != null;
-                if (pr.quantity > productInDB.quantity){
+                if (pr.quantity > productInDB.quantity) {
                     enoughStock = false;
                 }
                 price += pr.quantity * productInDB.price;
             }
 
-            if (enoughStock && wallet >= price){
+            if (enoughStock && wallet >= price) {
                 // can buy
-                for (Product pr : products){
+                for (Product pr : products) {
                     Product productInDB = SQL_IMPLEMENTATION.checkProduct(pr);
                     assert productInDB != null;
-                    pr.quantity = productInDB.quantity-pr.quantity;
-                    SQL_IMPLEMENTATION.modifyProduct(pr,3);
+                    pr.quantity = productInDB.quantity - pr.quantity;
+                    SQL_IMPLEMENTATION.modifyProduct(pr, 3);
                 }
-                for(int i = 0; i < products.size(); i++){
+                for (int i = 0; i < products.size(); i++) {
                     tableModel.removeRow(0);
                 }
                 item = 0;
                 this.setVisible(false);
                 this.setVisible(true);
                 products.clear();
-                SQL_IMPLEMENTATION.changeWallet(cs.username, (wallet-price), price);
-                moneyLabel.setText("Money:"+SQL_IMPLEMENTATION.getWallet(cs.username)+" Purchase completed.");
+                SQL_IMPLEMENTATION.changeWallet(cs.username, (wallet - price), price);
+                moneyLabel.setText("Money:" + SQL_IMPLEMENTATION.getWallet(cs.username) + " Purchase completed.");
                 wallet -= price;
-            }
-            else
-                moneyLabel.setText("Money:"+SQL_IMPLEMENTATION.getWallet(cs.username)+" Not enough stock or balance");
+            } else
+                moneyLabel.setText("Money:" + SQL_IMPLEMENTATION.getWallet(cs.username) + " Not enough stock or balance");
         }
     }
 }

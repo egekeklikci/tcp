@@ -31,7 +31,7 @@ public class DataController extends JFrame implements ActionListener {
         // Add the upper and lower parts to the frame
         add(scrollPane, BorderLayout.NORTH);
         add(buttonPanel, BorderLayout.CENTER);
-        setBounds(0,0,400,400);
+        setBounds(0, 0, 400, 400);
         setLocationRelativeTo(null); // Center the frame on the screen
         setResizable(false);
     }
@@ -40,16 +40,17 @@ public class DataController extends JFrame implements ActionListener {
         ArrayList<Product> products = SQL_IMPLEMENTATION.printProducts();
         itemCount = products.size();
 
-        String col[] = {"Name","Price","VAT", "Quantity"};
+        String col[] = {"Name", "Price", "VAT", "Quantity"};
         tableModel = new DefaultTableModel(col, 0);
-        for(int i = 0; i < itemCount ; i++) {
-            Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat, products.get(i).quantity};
+        for (int i = 0; i < itemCount; i++) {
+            Object[] objs = {products.get(i).name, products.get(i).price, products.get(i).vat, products.get(i).quantity};
             tableModel.addRow(objs);
         }
         table = new JTable(tableModel);
         table.setDefaultEditor(Object.class, null);
         return table;
     }
+
     private JPanel createButtonPanel() {
         JPanel buttonPanel = new JPanel(new GridLayout(2, 4));
 
@@ -72,29 +73,31 @@ public class DataController extends JFrame implements ActionListener {
 
         return buttonPanel;
     }
+
     @Override
     public void actionPerformed(ActionEvent e) {
-        if(e.getSource() == refreshButton){
+        if (e.getSource() == refreshButton) {
             ArrayList<Product> products = SQL_IMPLEMENTATION.printProducts();
             int size = products.size();
-            if (modified){
-                for(int i = 0; i < itemCount; i++){
+            if (modified) {
+                for (int i = 0; i < itemCount; i++) {
                     tableModel.removeRow(0);
                 }
-                for(int i = 0; i < size ; i++) {
-                    Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat, products.get(i).quantity};
+                for (int i = 0; i < size; i++) {
+                    Object[] objs = {products.get(i).name, products.get(i).price, products.get(i).vat, products.get(i).quantity};
                     tableModel.addRow(objs);
                 }
                 itemCount = size;
                 modified = false;
                 return;
             }
-            if (size==itemCount) {
+            if (size == itemCount) {
                 return;
-            };
+            }
+            ;
             if (size > itemCount) {
                 for (int i = itemCount; i < size; i++) {
-                    Object[] objs = {products.get(i).name,products.get(i).price, products.get(i).vat, products.get(i).quantity};
+                    Object[] objs = {products.get(i).name, products.get(i).price, products.get(i).vat, products.get(i).quantity};
                     tableModel.addRow(objs);
                 }
                 tableModel.fireTableDataChanged();
@@ -102,16 +105,15 @@ public class DataController extends JFrame implements ActionListener {
                 return;
             }
             int i = 0;
-            while (i < size){
-                if (!tableModel.getValueAt(i, 0).equals(products.get(i).name) || (int) tableModel.getValueAt(i, 1)!=products.get(i).price || ((int)tableModel.getValueAt(i, 2))!=products.get(i).vat) {
+            while (i < size) {
+                if (!tableModel.getValueAt(i, 0).equals(products.get(i).name) || (int) tableModel.getValueAt(i, 1) != products.get(i).price || ((int) tableModel.getValueAt(i, 2)) != products.get(i).vat) {
                     tableModel.removeRow(i);
                     itemCount--;
-                }
-                else
+                } else
                     i++;
             }
             i = size;
-            while (i < itemCount){
+            while (i < itemCount) {
                 tableModel.removeRow(i);
                 itemCount--;
             }
@@ -121,32 +123,33 @@ public class DataController extends JFrame implements ActionListener {
         if (add != null) {
             if (add.isDisplayable()) return;
         }
-        if (remove!=null){
+        if (remove != null) {
             if (remove.isDisplayable()) return;
         }
-        if (modify != null){
+        if (modify != null) {
             if (modify.isDisplayable()) return;
         }
-        if (e.getSource() == addButton){
+        if (e.getSource() == addButton) {
             add = new Add();
             add.setVisible(true);
             System.out.println("add");
             return;
         }
-        if (e.getSource() == removeButton){
+        if (e.getSource() == removeButton) {
             remove = new Remove();
             remove.setVisible(true);
             System.out.println("Remove");
             return;
         }
-        if (e.getSource() == modifyButton){
+        if (e.getSource() == modifyButton) {
             modify = new Modify();
             modify.setVisible(true);
             System.out.println("Modify Select Screen");
             return;
         }
     }
-    static void close(JFrame frame){
+
+    static void close(JFrame frame) {
         frame.dispose();
     }
 }
